@@ -2,6 +2,8 @@
 #include <filesystem>
 #include <algorithm>
 #include <cctype>
+#include <vector>
+#include <string>
 
 using namespace std;
 namespace fs = filesystem;
