@@ -1,86 +1,56 @@
-<p style="font-family: 'Caveat', cursive;">
-Author Sushant Kumar
-</p>
-
-<h1 align="center" style="font-family: 'Times New Roman', Times, serif;">
-AuraDedup
-</h1>
-
-<p align="left" style="font-family: 'Comic Sans MS', cursive;">
-A local tool to find duplicate and near-duplicate photos — so you don't have to eyeball thousands of files to spot the copies eating your storage.
-</p>
-
-<h3>Why</h3>
-
-<p style="font-family: 'Comic Sans MS', cursive;">
-Everyday users constantly run out of phone and computer storage because of duplicate
-or near-duplicate photos—think burst shots, slightly blurry accidental photos, or
-compressed memes saved multiple times.
-Standard software uses traditional matching (like checking file names or exact
-cryptographic hashes), which completely fails if a picture is slightly resized, compressed,
-or shifted by a single pixel. Conversely, modern AI photo scanners are often too slow,
-require expensive cloud servers, and present a massive privacy risk by scanning
-personal directories online.
-</p>
-
-<h3>What is this</h3>
-
-<p style="font-family: 'Comic Sans MS', cursive;">
-AuraDedup is a lightning-fast, highly optimized local desktop application. It scans a
-user's computer, identifies visually similar images even if they have been altered, and
-groups them together so the user can easily free up gigabytes of storage space.
-Because it runs entirely locally using a highly efficient custom-built backend, it
-guarantees 100% data privacy and operates at speeds standard applications cannot
-match.
-<\p>
+<hr>
 
 <h2 style="font-family: 'Comic Sans MS', cursive;">
-🚀 Progress Log
+⚠️ Advanced Edge Cases / Known Limitations
 </h2>
 
 <h3 style="font-family: 'Comic Sans MS', cursive;">
-📅 Day 1 — Repository Setup + Directory Scanner
+1. The Aliasing Vulnerability (High-Frequency Noise)
 </h3>
 
 <p style="font-family: 'Comic Sans MS', cursive;">
-Built the initial repository structure and implemented 
-<b><code>scan_directory()</code></b>. It recursively walks through a folder 
-and all its subfolders to find image files 
-<b>(JPG, JPEG, PNG, BMP, GIF)</b>. File extensions are handled 
-<b>case-insensitively</b>, while non-image files are skipped.
+The current downsampling algorithm uses extremely fast
+<b>nearest-neighbor sampling</b> using calculations such as
+<code>srcX = x * w / TW</code>.
+While this approach is computationally efficient, it is susceptible
+to <b>aliasing</b> when processing images containing sharp,
+high-frequency patterns.
 </p>
 
 <p style="font-family: 'Comic Sans MS', cursive;">
-🧪 Verified the scanner using <b><code>dev_check.cpp</code></b>, 
-a temporary CLI program that lists all the image files found.
+For example, an image containing a fine checkerboard pattern or
+similar high-frequency details may produce significantly different
+brightness gradients if the image is shifted by even a single pixel.
+This can cause several bits of the dHash to flip and reduce the
+stability of similarity detection.
 </p>
 
-<hr>
+<p style="font-family: 'Comic Sans MS', cursive;">
+💡 <b>Future improvement:</b> Apply a small box-blur or averaging
+operation before downsampling and hashing. This could reduce
+high-frequency noise and make the generated hash more stable.
+</p>
 
 <h3 style="font-family: 'Comic Sans MS', cursive;">
-📅 Day 2 — dHash Implementation
+2. Unicode File Paths on Windows
 </h3>
 
 <p style="font-family: 'Comic Sans MS', cursive;">
-Implemented <b><code>compute_dhash()</code></b>, which generates a 
-<b>64-bit Difference Hash (dHash)</b> for each image using 
-<a href="https://github.com/nothings/stb">stb_image</a> for image decoding.
+File paths containing non-ASCII Unicode characters may cause problems
+on Windows. The current image loading process relies on the standard
+C <code>open()</code> mechanism internally through <code>stb_image</code>,
+which may struggle with paths containing characters such as
+Japanese Kanji, emojis, or certain accented characters.
 </p>
 
 <p style="font-family: 'Comic Sans MS', cursive;">
-🖼️ Each image is downsampled to a <b>9×8 grayscale grid</b>. 
-The algorithm then compares the brightness of neighboring pixels and 
-stores these comparisons as individual bits, producing a compact 
-<b>64-bit hash</b>.
+As a result, files whose paths contain non-standard Unicode characters
+may be discovered by the scanner but fail during image decoding on
+Windows.
 </p>
 
 <p style="font-family: 'Comic Sans MS', cursive;">
-⚡ This makes the hash relatively stable against 
-<b>recompression and resizing</b>, while remaining very cheap to 
-calculate and compare.
-</p>
-
-<p style="font-family: 'Comic Sans MS', cursive;">
-🔍 <b><code>dev_check.cpp</code></b> was updated to display each image's 
-dHash alongside its file path.
+💡 <b>Future improvement:</b> Add proper Windows Unicode path handling
+using wide-character file APIs or a Unicode-compatible image-loading
+path.
 </p>

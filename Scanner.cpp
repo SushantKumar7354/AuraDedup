@@ -1,4 +1,4 @@
-#include "scanner.hpp"
+#include "Scanner.hpp"
 
 #include <filesystem>
 #include <algorithm>

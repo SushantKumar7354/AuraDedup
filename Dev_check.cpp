@@ -28,7 +28,15 @@ int main(int argc, char **argv)
 
     for(const auto &f : files)
     {
-        uint64_t hash = compute_dhash(f);
+        optional<uint64_t> hash_opt = compute_dhash(f);
+
+        if(!hash_opt.has_value())
+        {
+            cout << "  [Decode Error]      " << f << "\n";
+            continue;
+        }
+
+        uint64_t hash = hash_opt.value();
 
         cout << "  "
              << hex
@@ -37,14 +45,8 @@ int main(int argc, char **argv)
              << hash
              << dec
              << "  "
-             << f;
-
-        if(hash == 0)
-        {
-            cout << "   (couldn't decode -- unsupported or corrupt file)";
-        }
-
-        cout << "\n";
+             << f
+             << "\n";
     }
 
     return 0;

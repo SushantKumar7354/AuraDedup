@@ -48,7 +48,7 @@ vector<unsigned char> to_gray_9x8(
     return gray;
 }
 
-uint64_t compute_dhash(const string &filepath)
+optional<uint64_t> compute_dhash(const string &filepath)
 {
     int w, h, channels;
 
@@ -62,7 +62,7 @@ uint64_t compute_dhash(const string &filepath)
             stbi_image_free(data);
         }
 
-        return 0;
+        return nullopt;
     }
 
     vector<unsigned char> gray =
