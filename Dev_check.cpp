@@ -1,5 +1,5 @@
-#include "scanner.hpp"
-#include "phash.hpp"
+#include "Scanner.hpp"
+#include "Phash.hpp"
 
 #include <bits/stdc++.h>
 
@@ -50,4 +50,3 @@ int main(int argc, char **argv)
     }
 
     return 0;
-}

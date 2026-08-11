@@ -1,7 +1,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 
 #include "stb_image.h"
-#include "phash.hpp"
+#include "Phash.hpp"
 
 #include <bits/stdc++.h>
 
