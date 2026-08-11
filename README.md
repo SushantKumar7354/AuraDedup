@@ -33,3 +33,54 @@ Because it runs entirely locally using a highly efficient custom-built backend, 
 guarantees 100% data privacy and operates at speeds standard applications cannot
 match.
 <\p>
+
+<h2 style="font-family: 'Comic Sans MS', cursive;">
+🚀 Progress Log
+</h2>
+
+<h3 style="font-family: 'Comic Sans MS', cursive;">
+📅 Day 1 — Repository Setup + Directory Scanner
+</h3>
+
+<p style="font-family: 'Comic Sans MS', cursive;">
+Built the initial repository structure and implemented 
+<b><code>scan_directory()</code></b>. It recursively walks through a folder 
+and all its subfolders to find image files 
+<b>(JPG, JPEG, PNG, BMP, GIF)</b>. File extensions are handled 
+<b>case-insensitively</b>, while non-image files are skipped.
+</p>
+
+<p style="font-family: 'Comic Sans MS', cursive;">
+🧪 Verified the scanner using <b><code>dev_check.cpp</code></b>, 
+a temporary CLI program that lists all the image files found.
+</p>
+
+<hr>
+
+<h3 style="font-family: 'Comic Sans MS', cursive;">
+📅 Day 2 — dHash Implementation
+</h3>
+
+<p style="font-family: 'Comic Sans MS', cursive;">
+Implemented <b><code>compute_dhash()</code></b>, which generates a 
+<b>64-bit Difference Hash (dHash)</b> for each image using 
+<a href="https://github.com/nothings/stb">stb_image</a> for image decoding.
+</p>
+
+<p style="font-family: 'Comic Sans MS', cursive;">
+🖼️ Each image is downsampled to a <b>9×8 grayscale grid</b>. 
+The algorithm then compares the brightness of neighboring pixels and 
+stores these comparisons as individual bits, producing a compact 
+<b>64-bit hash</b>.
+</p>
+
+<p style="font-family: 'Comic Sans MS', cursive;">
+⚡ This makes the hash relatively stable against 
+<b>recompression and resizing</b>, while remaining very cheap to 
+calculate and compare.
+</p>
+
+<p style="font-family: 'Comic Sans MS', cursive;">
+🔍 <b><code>dev_check.cpp</code></b> was updated to display each image's 
+dHash alongside its file path.
+</p>

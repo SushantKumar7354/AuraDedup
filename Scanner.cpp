@@ -1,11 +1,11 @@
 #include "scanner.hpp"
+
 #include <filesystem>
 #include <algorithm>
 #include <cctype>
-#include <vector>
-#include <string>
 
 using namespace std;
+
 namespace fs = filesystem;
 
 string to_lower(string s)
@@ -31,9 +31,11 @@ vector<string> scan_directory(
         return ans;
     }
 
+    auto opts = fs::directory_options::skip_permission_denied;
+
     for(auto it = fs::recursive_directory_iterator(
             folder,
-            fs::directory_options::skip_permission_denied,
+            opts,
             ec);
         it != fs::recursive_directory_iterator();
         it.increment(ec))
@@ -54,7 +56,9 @@ vector<string> scan_directory(
 
         string ext = to_lower(entry.path().extension().string());
 
-        if(find(extensions.begin(), extensions.end(), ext) != extensions.end())
+        if(find(extensions.begin(),
+                extensions.end(),
+                ext) != extensions.end())
         {
             ans.push_back(entry.path().string());
         }

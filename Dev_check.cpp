@@ -1,11 +1,9 @@
 #include "scanner.hpp"
+#include "phash.hpp"
+
 #include <bits/stdc++.h>
 
 using namespace std;
-vector<string>scan_directory(
-    const string &folder,
-    const vector<string>&extentions
-);
 
 int main(int argc, char **argv)
 {
@@ -30,7 +28,23 @@ int main(int argc, char **argv)
 
     for(const auto &f : files)
     {
-        cout << " " << f << "\n";
+        uint64_t hash = compute_dhash(f);
+
+        cout << "  "
+             << hex
+             << setw(16)
+             << setfill('0')
+             << hash
+             << dec
+             << "  "
+             << f;
+
+        if(hash == 0)
+        {
+            cout << "   (couldn't decode -- unsupported or corrupt file)";
+        }
+
+        cout << "\n";
     }
 
     return 0;
