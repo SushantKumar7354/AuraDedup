@@ -1,13 +1,14 @@
 #define STB_IMAGE_IMPLEMENTATION
 
 #include "stb_image.h"
-#include "Phash.hpp"
+#include "phash.hpp"
 
 #include <bits/stdc++.h>
 
 using namespace std;
 
-vector<unsigned char> to_gray_9x8(
+// Added 'static' to prevent global linker errors
+static vector<unsigned char> to_gray_9x8(
     const unsigned char *data,
     int w,
     int h,
@@ -71,7 +72,6 @@ optional<uint64_t> compute_dhash(const string &filepath)
     stbi_image_free(data);
 
     uint64_t hash = 0;
-
     int bit = 0;
 
     for(int y = 0; y < 8; y++)

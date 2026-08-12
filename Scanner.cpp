@@ -1,4 +1,4 @@
-#include "Scanner.hpp"
+#include "scanner.hpp"
 
 #include <filesystem>
 #include <algorithm>
@@ -8,7 +8,8 @@ using namespace std;
 
 namespace fs = filesystem;
 
-string to_lower(string s)
+// Added 'static' to prevent global linker errors
+static string to_lower(string s)
 {
     for(char &c : s)
     {
@@ -23,7 +24,6 @@ vector<string> scan_directory(
     const vector<string> &extensions)
 {
     vector<string> ans;
-
     error_code ec;
 
     if(!fs::exists(folder, ec) || !fs::is_directory(folder, ec))
@@ -46,7 +46,6 @@ vector<string> scan_directory(
         }
 
         auto entry = *it;
-
         error_code file_ec;
 
         if(!entry.is_regular_file(file_ec) || file_ec)

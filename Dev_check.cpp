@@ -1,5 +1,5 @@
-#include "Scanner.hpp"
-#include "Phash.hpp"
+#include "scanner.hpp"
+#include "phash.hpp"
 
 #include <bits/stdc++.h>
 
