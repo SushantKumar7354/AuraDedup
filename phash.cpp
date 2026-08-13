@@ -7,7 +7,8 @@
 
 using namespace std;
 
-vector<unsigned char> to_gray_9x8(
+// Added 'static' to prevent global linker collisions
+static vector<unsigned char> to_gray_9x8(
     const unsigned char *data,
     int w,
     int h,

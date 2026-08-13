@@ -8,7 +8,8 @@ using namespace std;
 
 namespace fs = filesystem;
 
-string to_lower(string s)
+// Added 'static' to prevent global linker collisions
+static string to_lower(string s)
 {
     for(char &c : s)
     {
