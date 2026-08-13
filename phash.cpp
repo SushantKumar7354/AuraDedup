@@ -7,7 +7,7 @@
 
 using namespace std;
 
-// Added 'static' to prevent global linker errors
+// Added 'static' to prevent global linker collisions
 static vector<unsigned char> to_gray_9x8(
     const unsigned char *data,
     int w,
@@ -72,6 +72,7 @@ optional<uint64_t> compute_dhash(const string &filepath)
     stbi_image_free(data);
 
     uint64_t hash = 0;
+
     int bit = 0;
 
     for(int y = 0; y < 8; y++)

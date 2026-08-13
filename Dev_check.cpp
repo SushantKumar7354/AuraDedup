@@ -1,5 +1,6 @@
 #include "scanner.hpp"
 #include "phash.hpp"
+#include "matcher.hpp"
 
 #include <bits/stdc++.h>
 
@@ -9,9 +10,11 @@ int main(int argc, char **argv)
 {
     if(argc < 2)
     {
-        cerr << "Usage: " << argv[0] << " <folder>\n";
+        cerr << "Usage: " << argv[0] << " <folder> [threshold]\n";
         return 1;
     }
+
+    int threshold = (argc >= 3) ? stoi(argv[2]) : 5;
 
     vector<string> extensions = {
         ".jpg",
@@ -26,27 +29,44 @@ int main(int argc, char **argv)
     cout << "Found " << files.size()
          << " image file(s) in " << argv[1] << ":\n";
 
+    vector<FileHash> items;
+
     for(const auto &f : files)
     {
-        optional<uint64_t> hash_opt = compute_dhash(f);
+        auto hash_opt = compute_dhash(f);
 
         if(!hash_opt.has_value())
         {
-            cout << "  [Decode Error]      " << f << "\n";
+            cout << "  [skip] " << f << "  (couldn't decode)\n";
             continue;
         }
 
-        uint64_t hash = hash_opt.value();
+        items.push_back({f, hash_opt.value()});
+    }
 
-        cout << "  "
-             << hex
-             << setw(16)
-             << setfill('0')
-             << hash
-             << dec
-             << "  "
-             << f
-             << "\n";
+    cout << "\nComparing " << items.size()
+         << " image(s) pairwise (threshold=" << threshold << ")...\n";
+
+    auto groups = find_duplicates_naive(items, threshold);
+
+    if(groups.empty())
+    {
+        cout << "No duplicates found.\n";
+        return 0;
+    }
+
+    cout << "\nFound " << groups.size() << " duplicate group(s):\n";
+
+    int g = 1;
+
+    for(const auto &group : groups)
+    {
+        cout << "Group " << g++ << ":\n";
+
+        for(int idx : group)
+        {
+            cout << "  " << items[idx].path << "\n";
+        }
     }
 
     return 0;

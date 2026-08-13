@@ -6,17 +6,17 @@ build/
 *.dylib
 *.o
 *.obj
- 
+
 # Python
 __pycache__/
 *.pyc
 .venv/
 venv/
 *.egg-info/
- 
+
 # Generated output
 dedup_dashboard.png
- 
+
 # OS cruft
 .DS_Store
 Thumbs.db
