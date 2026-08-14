@@ -1,6 +1,7 @@
 #include "scanner.hpp"
 #include "phash.hpp"
 #include "matcher.hpp"
+#include "vptree.hpp"
 
 #include <bits/stdc++.h>
 
@@ -43,6 +44,20 @@ int main(int argc, char **argv)
 
         items.push_back({f, hash_opt.value()});
     }
+
+    cout << "\nBuilding VP-Tree index over " << items.size() << " image(s)...\n";
+
+    VPTree tree;
+    tree.build(items);
+
+    cout << "  " << tree.node_count() << " node(s), depth " << tree.depth();
+
+    if(!tree.verify_invariant())
+    {
+        cout << "  [WARNING: invariant check failed -- do not trust search on this tree]";
+    }
+
+    cout << "\n";
 
     cout << "\nComparing " << items.size()
          << " image(s) pairwise (threshold=" << threshold << ")...\n";

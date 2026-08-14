@@ -116,3 +116,37 @@ mismatch that broke the build on Linux/macOS.
 🔍 <b><code>dev_check.cpp</code></b> now prints actual duplicate groups
 end-to-end, instead of just raw hashes.
 </p>
+
+<hr>
+
+<h3 style="font-family: 'Comic Sans MS', cursive;">
+📅 Day 4 — VP-Tree Construction
+</h3>
+
+<p style="font-family: 'Comic Sans MS', cursive;">
+Implemented the build side of a <b>Vantage-Point Tree</b>: recursively
+picks a vantage point, partitions the remaining hashes by Hamming distance
+to it, and repeats on each half. This is the index the search will run
+against tomorrow — today is just proving the tree's shape is actually
+correct before search logic goes anywhere near it.
+</p>
+
+<p style="font-family: 'Comic Sans MS', cursive;">
+🧪 Added <b><code>verify_invariant()</code></b>, which walks the whole
+tree and re-derives every distance from scratch to confirm the core
+VP-Tree property holds at every node: everything closer than the node's
+threshold ends up in <code>inside</code>, everything farther in
+<code>outside</code>. Deliberately slow (checks every pair) — it's a
+correctness tool, not something meant to run in the hot path.
+</p>
+
+<p style="font-family: 'Comic Sans MS', cursive;">
+📊 On a 200-item random test, the tree came out <b>8 levels deep</b>
+(log₂(200) ≈ 7.6) instead of 200 — confirms the partitioning is actually
+balancing the tree, not degenerating into a linked list.
+</p>
+
+<p style="font-family: 'Comic Sans MS', cursive;">
+🔍 <b><code>dev_check.cpp</code></b> now builds the index and prints its
+node count/depth alongside the (still naive, for now) duplicate groups.
+</p>

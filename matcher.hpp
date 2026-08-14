@@ -3,10 +3,12 @@
 #include <vector>
 #include <cstdint>
 
+using namespace std;
+
 // One scanned image: its path and its 64-bit perceptual hash.
 struct FileHash
 {
-    std::string path;
+    string path;
     uint64_t hash;
 };
 
@@ -18,4 +20,4 @@ int hamming_distance(uint64_t a, uint64_t b);
 // we'll check the VP-Tree version against once that exists.
 // Returns groups of indices into `items` whose hashes are within
 // `threshold` of each other. Groups of size 1 (no match found) are dropped.
-std::vector<std::vector<int>> find_duplicates_naive(const std::vector<FileHash> &items, int threshold);
+vector<vector<int>> find_duplicates_naive(const vector<FileHash> &items, int threshold);

@@ -1,8 +1,5 @@
 #include "matcher.hpp"
 #include <bitset>
-#include <bits/stdc++.h>
-
-using namespace std;
 
 int hamming_distance(uint64_t a, uint64_t b)
 {
@@ -25,7 +22,7 @@ vector<vector<int>> find_duplicates_naive(const vector<FileHash> &items, int thr
 
         vector<int> group;
 
-        for(int j = i; j < n; j++)
+        for(int j = 0; j < n; j++)
         {
             if(visited[j])
             {
