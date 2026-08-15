@@ -4,8 +4,32 @@
 #include "vptree.hpp"
 
 #include <bits/stdc++.h>
+#include <chrono>
 
 using namespace std;
+
+bool groups_match(vector<vector<int>> a, vector<vector<int>> b)
+{
+    if(a.size() != b.size())
+    {
+        return false;
+    }
+
+    for(auto &g : a)
+    {
+        sort(g.begin(), g.end());
+    }
+
+    for(auto &g : b)
+    {
+        sort(g.begin(), g.end());
+    }
+
+    sort(a.begin(), a.end());
+    sort(b.begin(), b.end());
+
+    return a == b;
+}
 
 int main(int argc, char **argv)
 {
@@ -60,9 +84,35 @@ int main(int argc, char **argv)
     cout << "\n";
 
     cout << "\nComparing " << items.size()
-         << " image(s) pairwise (threshold=" << threshold << ")...\n";
+         << " image(s) both ways (threshold=" << threshold << ")...\n";
 
-    auto groups = find_duplicates_naive(items, threshold);
+    auto t0 = chrono::steady_clock::now();
+    auto naive_groups = find_duplicates_naive(items, threshold);
+    auto t1 = chrono::steady_clock::now();
+    auto tree_groups = find_duplicates_vptree(tree, items, threshold);
+    auto t2 = chrono::steady_clock::now();
+
+    double naive_ms = chrono::duration<double, milli>(t1 - t0).count();
+    double tree_ms = chrono::duration<double, milli>(t2 - t1).count();
+
+    bool match = groups_match(naive_groups, tree_groups);
+
+    cout << "  naive: " << naive_ms << " ms   VP-Tree: " << tree_ms << " ms   ";
+
+    if(match)
+    {
+        cout << "(results match)\n";
+    }
+    else
+    {
+        cout << "(MISMATCH -- falling back to naive for safety)\n";
+    }
+
+    // Trust the tree only when it's both verified correct on this run AND
+    // actually faster -- at small thresholds it wins by a lot, but at the
+    // loose thresholds this project actually uses it can lose to a plain
+    // scan (see README, Day 5). Don't assume; measure every time.
+    const auto &groups = (match && tree_ms < naive_ms) ? tree_groups : naive_groups;
 
     if(groups.empty())
     {

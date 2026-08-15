@@ -150,3 +150,50 @@ balancing the tree, not degenerating into a linked list.
 🔍 <b><code>dev_check.cpp</code></b> now builds the index and prints its
 node count/depth alongside the (still naive, for now) duplicate groups.
 </p>
+
+<hr>
+
+<h3 style="font-family: 'Comic Sans MS', cursive;">
+📅 Day 5 — VP-Tree Search + a Real Finding About It
+</h3>
+
+<p style="font-family: 'Comic Sans MS', cursive;">
+Implemented <b><code>find_within()</code></b> — the actual tree search,
+using the standard VP-Tree pruning rule to skip branches that can't
+possibly contain a match. Checked it against an independent brute-force
+reference across 200 random queries on a 300-item tree: <b>zero
+mismatches</b>. Then added <b><code>find_duplicates_vptree()</code></b>,
+which groups duplicates using the tree instead of a linear scan, and
+cross-checked it against Day 3's <code>find_duplicates_naive()</code>
+across 49 different (size, threshold) combinations plus the earlier
+clustered/all-identical test cases — <b>every result matched exactly</b>.
+</p>
+
+<p style="font-family: 'Comic Sans MS', cursive;">
+📉 <b>Here's the part I didn't expect:</b> at this project's actual
+default threshold (5), the VP-Tree came out <i>slower</i> than the naive
+scan it was supposed to replace — 258ms vs 230ms on 10,000 items. At
+threshold 0–2 it's dramatically faster (up to 48x at threshold 0), but
+that advantage flips somewhere around threshold 3–4 and gets worse the
+looser the matching gets.
+</p>
+
+<p style="font-family: 'Comic Sans MS', cursive;">
+Why: in 64-bit Hamming space, a loose search radius means the tree's
+pruning condition ends up true on <i>both</i> branches at nearly every
+node, so it walks almost the whole tree anyway — just with recursion and
+pointer-chasing overhead that a flat array scan doesn't pay. This is a
+known limitation of VP-Trees (and metric trees generally) for exactly
+this kind of loose/near-duplicate matching in high-bit-count spaces —
+not a bug in the implementation, which is independently verified correct.
+</p>
+
+<p style="font-family: 'Comic Sans MS', cursive;">
+🔧 <b><code>dev_check.cpp</code></b> now runs and times <i>both</i>
+implementations every time, verifies they agree, and uses whichever was
+actually faster on that run — rather than assuming the tree wins just
+because it's the fancier data structure. Both stay in the codebase:
+naive as the always-correct baseline, VP-Tree as validated, working
+infrastructure that's a genuine win for tight-threshold matching even if
+not (yet) for this project's default.
+</p>

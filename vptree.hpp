@@ -5,18 +5,19 @@
 
 using namespace std;
 
-// A Vantage-Point Tree over Hamming space. Organizes hashes so that a
-// future search can ask "what's within distance D of this point?" without
-// comparing against every other point. That's tomorrow's job though --
-// today is just building the tree and proving its shape is actually
-// correct before any search logic gets written on top of it.
+// A Vantage-Point Tree over Hamming space. Organizes hashes so a query can
+// ask "what's within distance D of this point?" in roughly O(log n) time
+// instead of comparing against every other point.
 class VPTree
 {
 public:
     void build(vector<FileHash> data);
 
-    // Diagnostics -- useful today since there's no search yet to prove
-    // the tree works end-to-end.
+    // Returns indices (into the data passed to build()) of every point
+    // within max_distance of target, including target itself.
+    vector<int> find_within(const FileHash &target, int max_distance) const;
+
+    // Diagnostics -- useful for sanity-checking the build.
     int node_count() const;
     int depth() const;
 
@@ -41,9 +42,18 @@ private:
     unique_ptr<Node> root;
 
     unique_ptr<Node> build_recursive(vector<int> &indices, int lo, int hi);
+    void search_recursive(const Node *node, const FileHash &target, int max_distance,
+                           vector<int> &results) const;
 
     int count_recursive(const Node *node) const;
     int depth_recursive(const Node *node) const;
     void collect_recursive(const Node *node, vector<int> &out) const;
     bool verify_recursive(const Node *node) const;
 };
+
+// Same grouping semantics as find_duplicates_naive() (see matcher.hpp) --
+// every unvisited image becomes a group leader, everything the tree finds
+// within threshold of it joins the group and gets marked visited, groups
+// of size 1 are dropped. The only difference is *how* matches get found:
+// a tree query instead of a full linear scan.
+vector<vector<int>> find_duplicates_vptree(const VPTree &tree, const vector<FileHash> &items, int threshold);
