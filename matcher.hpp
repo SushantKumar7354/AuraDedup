@@ -21,3 +21,8 @@ int hamming_distance(uint64_t a, uint64_t b);
 // Returns groups of indices into `items` whose hashes are within
 // `threshold` of each other. Groups of size 1 (no match found) are dropped.
 vector<vector<int>> find_duplicates_naive(const vector<FileHash> &items, int threshold);
+
+// Compares two duplicate-group results for equality, ignoring group order
+// and the order of indices within each group. Used to cross-check
+// find_duplicates_vptree() against this naive baseline (see Day 5).
+bool groups_match(vector<vector<int>> a, vector<vector<int>> b);

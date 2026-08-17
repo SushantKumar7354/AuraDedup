@@ -8,6 +8,14 @@ using namespace std;
 
 namespace fs = filesystem;
 
+const vector<string> DEFAULT_IMAGE_EXTENSIONS = {
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".bmp",
+    ".gif"
+};
+
 string to_lower(string s)
 {
     for(char &c : s)

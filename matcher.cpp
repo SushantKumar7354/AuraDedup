@@ -1,5 +1,6 @@
 #include "matcher.hpp"
 #include <bitset>
+#include <algorithm>
 
 int hamming_distance(uint64_t a, uint64_t b)
 {
@@ -45,4 +46,27 @@ vector<vector<int>> find_duplicates_naive(const vector<FileHash> &items, int thr
     }
 
     return groups;
+}
+
+bool groups_match(vector<vector<int>> a, vector<vector<int>> b)
+{
+    if(a.size() != b.size())
+    {
+        return false;
+    }
+
+    for(auto &g : a)
+    {
+        sort(g.begin(), g.end());
+    }
+
+    for(auto &g : b)
+    {
+        sort(g.begin(), g.end());
+    }
+
+    sort(a.begin(), a.end());
+    sort(b.begin(), b.end());
+
+    return a == b;
 }

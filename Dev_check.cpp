@@ -8,29 +8,6 @@
 
 using namespace std;
 
-bool groups_match(vector<vector<int>> a, vector<vector<int>> b)
-{
-    if(a.size() != b.size())
-    {
-        return false;
-    }
-
-    for(auto &g : a)
-    {
-        sort(g.begin(), g.end());
-    }
-
-    for(auto &g : b)
-    {
-        sort(g.begin(), g.end());
-    }
-
-    sort(a.begin(), a.end());
-    sort(b.begin(), b.end());
-
-    return a == b;
-}
-
 int main(int argc, char **argv)
 {
     if(argc < 2)
@@ -41,15 +18,7 @@ int main(int argc, char **argv)
 
     int threshold = (argc >= 3) ? stoi(argv[2]) : 5;
 
-    vector<string> extensions = {
-        ".jpg",
-        ".jpeg",
-        ".png",
-        ".bmp",
-        ".gif"
-    };
-
-    auto files = scan_directory(argv[1], extensions);
+    auto files = scan_directory(argv[1], DEFAULT_IMAGE_EXTENSIONS);
 
     cout << "Found " << files.size()
          << " image file(s) in " << argv[1] << ":\n";

@@ -197,3 +197,45 @@ naive as the always-correct baseline, VP-Tree as validated, working
 infrastructure that's a genuine win for tight-threshold matching even if
 not (yet) for this project's default.
 </p>
+
+<hr>
+
+<h3 style="font-family: 'Comic Sans MS', cursive;">
+📅 Day 6 — pybind11 + CMake: Wiring C++ to Python
+</h3>
+
+<p style="font-family: 'Comic Sans MS', cursive;">
+Added <b><code>pipeline.cpp</code></b>, which strings together everything
+built Days 1–5 — scan, hash, build the index, cross-check naive against
+the VP-Tree, keep whichever's actually faster — into one clean function
+with no debug printing, since Python (not the terminal) is the caller
+now. <b><code>bindings.cpp</code></b> wraps that one function with
+<a href="https://github.com/pybind/pybind11">pybind11</a> as
+<code>aura_engine.find_duplicates(folder, threshold)</code>. Added
+<b><code>CMakeLists.txt</code></b> — the real build system, replacing
+the ad-hoc <code>g++ file1.cpp file2.cpp...</code> commands used through
+Day 5.
+</p>
+
+<p style="font-family: 'Comic Sans MS', cursive;">
+🧹 Small refactor while wiring this up: <code>groups_match()</code> and
+the default image-extensions list were both duplicated between
+<code>dev_check.cpp</code> and the new pipeline code, so both got
+promoted to shared homes (<code>matcher.hpp</code> and
+<code>scanner.hpp</code> respectively). <code>dev_check.cpp</code>'s
+actual behavior is unchanged — confirmed with the same test folder as
+Day 5, identical output.
+</p>
+
+<p style="font-family: 'Comic Sans MS', cursive;">
+⚠️ <b>Honest limitation on today's testing:</b> I couldn't install the
+real pybind11 in this environment (no internet access) or compile the
+actual CMake + pybind11 build, so <code>bindings.cpp</code> is verified
+two different ways short of that: the exact function it calls
+(<code>find_duplicates_in_folder</code>) is tested directly and returns
+correct results, and the pybind11-specific syntax was checked against a
+minimal stand-in header that mimics the real API surface, structurally.
+What's <i>not</i> yet proven is the real build+import on a real machine
+— that's the first thing to run once <code>stb_image.h</code>,
+<code>pybind11</code>, and CMake are actually installed.
+</p>
