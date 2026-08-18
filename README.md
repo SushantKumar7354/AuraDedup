@@ -239,3 +239,46 @@ What's <i>not</i> yet proven is the real build+import on a real machine
 — that's the first thing to run once <code>stb_image.h</code>,
 <code>pybind11</code>, and CMake are actually installed.
 </p>
+
+<hr>
+
+<h3 style="font-family: 'Comic Sans MS', cursive;">
+📅 Day 7 — Python CLI
+</h3>
+
+<p style="font-family: 'Comic Sans MS', cursive;">
+Added <b><code>deduplicate.py</code></b> — the actual user-facing entry
+point. Parses <code>--folder</code> and <code>--threshold</code>, calls
+<code>aura_engine.find_duplicates()</code>, and prints a report: which
+file to keep per group, which are the duplicates, and how much space
+freeing them would recover. File sizes are fetched here in Python
+(<code>os.path.getsize()</code>) rather than in C++ — no reason to make
+the engine carry that when Python already does it in one line.
+</p>
+
+<p style="font-family: 'Comic Sans MS', cursive;">
+🧯 If <code>aura_engine</code> isn't built yet (or isn't sitting next to
+the script), the CLI doesn't just crash with a raw Python traceback — it
+prints the exact build commands needed and exits cleanly. Mattered more
+than usual today: Day 6's real pybind11 build has never actually been
+run on a real machine yet, only tested indirectly, and I'm about to be
+away from this for a while. Added <code>requirements.txt</code> too —
+should have existed since Day 6, pybind11's been a real dependency since
+then.
+</p>
+
+<p style="font-family: 'Comic Sans MS', cursive;">
+🧪 Tested everything Python can test without the C++ module: size
+formatting, argument parsing (including missing/invalid args), and the
+full report against <i>real files with real sizes on disk</i> — not
+fake byte counts. Also tested the "engine not built" error path for
+real, since that's genuinely today's state in my own environment too.
+</p>
+
+<p style="font-family: 'Comic Sans MS', cursive;">
+👉 <b>First thing to do when picking this back up:</b> run the build
+commands from Day 6/7's README, then <code>python deduplicate.py
+--folder &lt;somewhere with photos&gt;</code>. If the CMake step itself
+fails, that's the very first real-machine test this project has had —
+worth pasting the error back here.
+</p>

@@ -1,11 +1,13 @@
 # Build artifacts
 build/
+output/
 *.pyd
 *.so
 *.dll
 *.dylib
 *.o
 *.obj
+*.exe
 
 # Python
 __pycache__/
