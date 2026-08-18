@@ -10,19 +10,18 @@ endif()
 
 find_package(pybind11 REQUIRED)
 
+
 pybind11_add_module(aura_engine
-    engine/src/bindings.cpp
-    engine/src/pipeline.cpp
-    engine/src/scanner.cpp
-    engine/src/phash.cpp
-    engine/src/matcher.cpp
-    engine/src/vptree.cpp
+    binding.cpp
+    pipeline.cpp
+    scanner.cpp
+    phash.cpp
+    matcher.cpp
+    vptree.cpp
 )
 
-target_include_directories(aura_engine PRIVATE engine/src engine/external)
+target_include_directories(aura_engine PRIVATE ${CMAKE_SOURCE_DIR})
 
-# Drop the built module (aura_engine*.pyd / .so) straight into the repo
-# root so it's importable with no manual copying once Python code shows up.
 set_target_properties(aura_engine PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}
